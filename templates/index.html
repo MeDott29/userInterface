@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Flask Application</title>
+    <title>Generative Dynamic Project Management Framework AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Welcome to My Flask Application!</h1>
-    <p>        </p>
+    <h2>Projects:</h2>
+    <ul>
+        <!-- Loop over each item in the file_contents dictionary -->
+        {% for file_name, file_content in file_contents.items() %}
+            <li>
+                <h3>{{ file_name }}</h3>
+                <pre>{{ file_content }}</pre>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
