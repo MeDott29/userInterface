@@ -114,9 +114,3 @@ Assistants API Beta
         Let me calculate the value of (x) for you.
         assistant	The solution to the equation (3x + 11 = 14) is (x = 1).
         You can also retrieve the Run Steps of this Run if you'd like to explore or display the inner workings of the Assistant and its tools.
-        
-        Next
-        Dive deeper into How Assistants work
-        Learn more about Tools
-        Explore the Assistants playground
-        Was this page useful?

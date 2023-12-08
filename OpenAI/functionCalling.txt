@@ -1,0 +1,127 @@
+Function calling
+Similar to the Chat Completions API, the Assistants API supports function calling. Function calling allows you to describe functions to the Assistants and have it intelligently return the functions that need to be called along with their arguments. The Assistants API will pause execution during a Run when it invokes functions, and you can supply the results of the function call back to continue the Run execution.
+
+Defining functions
+First, define your functions when creating an Assistant:
+
+python
+
+python
+assistant = client.beta.assistants.create(
+  instructions="You are a weather bot. Use the provided functions to answer questions.",
+  model="gpt-4-1106-preview",
+  tools=[{
+      "type": "function",
+    "function": {
+      "name": "getCurrentWeather",
+      "description": "Get the weather in location",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {"type": "string", "description": "The city and state e.g. San Francisco, CA"},
+          "unit": {"type": "string", "enum": ["c", "f"]}
+        },
+        "required": ["location"]
+      }
+    }
+  }, {
+    "type": "function",
+    "function": {
+      "name": "getNickname",
+      "description": "Get the nickname of a city",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {"type": "string", "description": "The city and state e.g. San Francisco, CA"},
+        },
+        "required": ["location"]
+      }
+    } 
+  }]
+)
+Reading the functions called by the Assistant
+When you initiate a Run with a user Message that triggers the function, the Run will enter a pending status. After it processes, the run will enter a requires_action state which you can verify by retrieving the Run. The model can provide multiple functions to call at once using parallel function calling:
+
+{
+  "id": "run_abc123",
+  "object": "thread.run",
+  "assistant_id": "asst_abc123",
+  "thread_id": "thread_abc123",
+  "status": "requires_action",
+  "required_action": {
+    "type": "submit_tool_outputs",
+    "submit_tool_outputs": {
+      "tool_calls": [
+        {
+          "id": "call_abc123",
+          "type": "function",
+          "function": {
+            "name": "getCurrentWeather",
+            "arguments": "{\"location\":\"San Francisco\"}"
+          }
+        },
+        {
+          "id": "call_abc456",
+          "type": "function",
+          "function": {
+            "name": "getNickname",
+            "arguments": "{\"location\":\"Los Angeles\"}"
+          }
+        }
+      ]
+    }
+  },
+...
+Submitting functions outputs
+You can then complete the Run by submitting the tool output from the function(s) you call. Pass the tool_call_id referenced in the required_action object above to match output to each function call.
+
+python
+
+python
+run = client.beta.threads.runs.submit_tool_outputs(
+  thread_id=thread.id,
+  run_id=run.id,
+  tool_outputs=[
+      {
+        "tool_call_id": call_ids[0],
+        "output": "22C",
+      },
+      {
+        "tool_call_id": call_ids[1],
+        "output": "LA",
+      },
+    ]
+)
+After submitting outputs, the run will enter the queued state before it continues it’s execution.
+
+Supported files
+For text/ MIME types, the encoding must be one of utf-8, utf-16, or ascii.
+
+FILE FORMAT	MIME TYPE	CODE INTERPRETER	RETRIEVAL
+.c	text/x-c		
+.cpp	text/x-c++		
+.csv	application/csv		
+.docx	application/vnd.openxmlformats-officedocument.wordprocessingml.document		
+.html	text/html		
+.java	text/x-java		
+.json	application/json		
+.md	text/markdown		
+.pdf	application/pdf		
+.php	text/x-php		
+.pptx	application/vnd.openxmlformats-officedocument.presentationml.presentation		
+.py	text/x-python		
+.py	text/x-script.python		
+.rb	text/x-ruby		
+.tex	text/x-tex		
+.txt	text/plain		
+.css	text/css		
+.jpeg	image/jpeg		
+.jpg	image/jpeg		
+.js	text/javascript		
+.gif	image/gif		
+.png	image/png		
+.tar	application/x-tar		
+.ts	application/typescript		
+.xlsx	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet		
+.xml	application/xml or "text/xml"		
+.zip	application/zip		
