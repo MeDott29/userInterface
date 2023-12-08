@@ -1,0 +1,17 @@
+Both `@math_asst.py` and `@test_asst.py` are Python scripts that define a function to add two numbers and use this function in a certain context. Here are the similarities and differences:
+
+**Similarities:**
+
+1. Both scripts define a function `add_numbers(num1, num2)` that takes two numbers as input and returns their sum.
+
+2. Both scripts use this function to add two numbers based on some input.
+
+**Differences:**
+
+1. `@math_asst.py` is designed to work with the OpenAI Assistant API. It creates an assistant with a specific instruction and a tool that represents the `add_numbers` function. It then creates a thread and a message, runs the assistant, and retrieves and displays the assistant's response. This script is designed to interact with an external API and handle user input in a more complex way.
+
+2. `@test_asst.py`, on the other hand, defines a class `Assistant` with a method `process(message)`. This method processes a string message, checks if it's a request to add numbers, parses the numbers, adds them using the `add_numbers` function, and returns a response. This script is simpler and doesn't interact with any external APIs.
+
+3. The user input is handled differently in both scripts. In `@math_asst.py`, the user input is passed as a message to the OpenAI Assistant API. In `@test_asst.py`, the user input is processed directly in the `process(message)` method.
+
+4. The way the result is displayed to the user is also different. In `@math_asst.py`, the assistant's response is retrieved from the API and printed. In `@test_asst.py`, the result is returned directly from the `process(message)` method.
